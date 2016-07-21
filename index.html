@@ -355,7 +355,7 @@
     function rightCallback (data) {
       $("#json-input-right").html(JSON.stringify(data));
       var delta = jsondiffpatch.diff(loaded.left, data);
-      var output = jsondiffpatch.formatters.html.format(delta, loaded.left);
+      var output = jsondiffpatch.formatters.html.format(delta);
       $('#visualdiff').html(output);
     }
 
