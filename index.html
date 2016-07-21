@@ -128,10 +128,14 @@
       display: inline-block;
     }
 
-    #visualdiff{
+    #visualdiff {
       min-height: 100px;
       clear: both;
       border: 1px dashed #ccc;
+    }
+    #globalError {
+      padding-left: 20px;
+      color: red;
     }
 
     /* jsondiffpatch(html format) start */
@@ -295,7 +299,7 @@
   <div class="json-input">
     <div id="json-panel-left">
       <label for="json-input-left">
-        <h2>JSON Left</h2>
+        <h2>JSON Expect</h2>
       </label>
       <button class="prettyfy" type="button" title="Pretty print">{ }</button>
       <textarea id="json-input-left">
@@ -305,7 +309,7 @@
     </div>
     <div id="json-panel-right">
       <label for="json-input-right">
-        <h2>JSON Right</h2>
+        <h2>JSON Actual</h2>
       </label>
       <button class="prettyfy" type="button" title="Pretty print">{ }</button>
       <textarea id="json-input-right">
@@ -315,7 +319,8 @@
     </div>
   </div>
   <div id="results">
-    <div id="visualdiff"></div>
+    <div id="globalError" style="display:none;"></div>
+    <div id="visualdiff" style="display:none;"></div>
   </div>
   <script>
     var files = {
@@ -325,27 +330,37 @@
       loaded = {
         left: {},
         right: {}
-      };
+      },
+      $globalError = $("#globalError");
 
     if (files.left) {
       $(function(){
         $.ajax({
           type: 'get',
           dataType: 'jsonp',
+          jsonp: 'leftCallback',
           url: files.left,
-          done: function(){
-            console.log('dddd');
+          error: function(a, b, c) {
+            //$("#json-panel-left .error-message").html(c);
           }
         });
       });
     }
+
+    window.onerror = function (err) {
+      $("#globalError").html(err).show();
+    };
 
     function leftCallback (data) {
       if (files.right) {
         $.ajax({
           type: 'get',
           dataType: 'jsonp',
+          jsonp: 'rightCallback',
           url: files.right,
+          error: function(a, b, c){
+            //$("#json-panel-right .error-message").html(c);
+          }
         });
       }
       $("#json-input-left").html(JSON.stringify(data));
@@ -353,10 +368,10 @@
     }
 
     function rightCallback (data) {
-      $("#json-input-right").html(JSON.stringify(data));
       var delta = jsondiffpatch.diff(loaded.left, data);
       var output = jsondiffpatch.formatters.html.format(delta);
-      $('#visualdiff').html(output);
+      $("#json-input-right").html(JSON.stringify(data));
+      $('#visualdiff').html(output).show();
     }
 
     function getQueryParameter (name) {
