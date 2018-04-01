@@ -1,6 +1,6 @@
 import requests
 
-username = "simon.du@quest.com"
+username = "username"
 password = "Password"
 artifactory = "https://artifactory.labs.quest.com/" #artifactory URL
 api = "api/storage/SpotlightCloud-OnPremConfig/builds/" #you can change this API URL to any API method you'd like to use
