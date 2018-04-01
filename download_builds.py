@@ -3,7 +3,7 @@ import json
 import re
 
 #enter credentials
-username = "simon.du@quest.com"
+username = "username"
 password = "password"
 artifactory = "https://artifactory.labs.quest.com/" #artifactory URL
 api = "api/storage/SpotlightCloud-OnPremConfig/builds" #you can change this API URL to any API method you'd like to use
